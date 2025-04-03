@@ -123,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 */
 
+/*
 import 'package:flutter/material.dart';
 import 'package:login_flutter/database_helper.dart';
 import 'login_screen.dart';
@@ -138,5 +139,85 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(debugShowCheckedModeBanner: false, home: LoginScreen());
+  }
+}
+*/
+
+/*
+// main.dart
+import 'package:flutter/material.dart';
+import 'database_helper.dart';
+import 'login_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Insertar usuario de prueba
+  final dbHelper = DatabaseHelper();
+  try {
+    await dbHelper.insertUser({
+      'username': 'test',
+      'password': '1234',
+      'email': 'test@example.com',
+    });
+    runApp(const MyApp());
+  } catch (e) {
+    print('Error al inicializar la base de datos: $e');
+    runApp(const MyApp()); // Corre la app aunque falle la inserción
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Login Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const LoginScreen(),
+    );
+  }
+}
+*/
+
+// main.dart
+import 'package:flutter/material.dart';
+import 'database_helper.dart';
+import 'login_screen.dart';
+import 'map_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final dbHelper = DatabaseHelper();
+  try {
+    await dbHelper.insertUser({
+      'username': 'test',
+      'password': '1234',
+      'email': 'test@example.com',
+    });
+    print('Usuario de prueba insertado');
+  } catch (e) {
+    print('Error al insertar usuario: $e');
+  }
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Login Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      initialRoute: '/login',
+      routes: {
+        '/login': (context) => const LoginScreen(),
+        '/map': (context) => const MapScreen(),
+      },
+    );
   }
 }

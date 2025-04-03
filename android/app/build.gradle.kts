@@ -9,6 +9,7 @@ android {
     namespace = "com.example.login_flutter"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+    
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -24,8 +25,8 @@ android {
         applicationId = "com.example.login_flutter"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        mminSdkVersion = 20                      // Update from 16 to 20
+        targetSdkVersion = 30
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

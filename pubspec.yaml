@@ -32,8 +32,9 @@ dependencies:
     sdk: flutter
   sqflite: ^2.0.0+4
   path: ^1.8.0
-  flutter_animate: ^4.2.0  # Opcional (Animaciones)
-  rive: ^0.11.0            # Opcional (Fondo animado)
+  flutter_animate: ^4.1.1  # Opcional
+  rive: ^0.11.0          # Opcional
+  google_maps_flutter: ^2.7.0  # Última versión al momento de escribir
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
