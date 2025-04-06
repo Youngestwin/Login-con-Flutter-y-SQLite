@@ -4,8 +4,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MarkerFormScreen extends StatefulWidget {
   final LatLng position;
+  final String? initialTitle; // Para edición
+  final String? initialDescription; // Para edición
 
-  const MarkerFormScreen({super.key, required this.position});
+  const MarkerFormScreen({
+    super.key,
+    required this.position,
+    this.initialTitle,
+    this.initialDescription,
+  });
 
   @override
   State<MarkerFormScreen> createState() => _MarkerFormScreenState();
@@ -13,8 +20,17 @@ class MarkerFormScreen extends StatefulWidget {
 
 class _MarkerFormScreenState extends State<MarkerFormScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController(text: widget.initialTitle);
+    _descriptionController = TextEditingController(
+      text: widget.initialDescription,
+    );
+  }
 
   @override
   void dispose() {
@@ -26,7 +42,11 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Agregar Marcador')),
+      appBar: AppBar(
+        title: Text(
+          widget.initialTitle != null ? 'Editar Marcador' : 'Agregar Marcador',
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -40,9 +60,8 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                 controller: _titleController,
                 decoration: const InputDecoration(labelText: 'Título'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa un título';
-                  }
+                  if (value == null || value.isEmpty)
+                    return 'Ingresa un título';
                   return null;
                 },
               ),
@@ -50,9 +69,8 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Descripción'),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor ingresa una descripción';
-                  }
+                  if (value == null || value.isEmpty)
+                    return 'Ingresa una descripción';
                   return null;
                 },
               ),
@@ -68,7 +86,6 @@ class _MarkerFormScreenState extends State<MarkerFormScreen> {
     );
   }
 
-  // Guardar los datos del marcador
   void _saveMarker() {
     if (_formKey.currentState!.validate()) {
       Navigator.pop(context, {

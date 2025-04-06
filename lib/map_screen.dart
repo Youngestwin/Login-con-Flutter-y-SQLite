@@ -40,12 +40,13 @@ class _MapScreenState extends State<MapScreen> {
         onMapCreated: (GoogleMapController controller) {
           _controller = controller;
         },
-        onLongPress: _onMapLongPress, // Detectar presión larga
+        onLongPress: _onMapLongPress, // Agregar nuevo marcador
+        onTap: (_) {}, // Evitar que el InfoWindow se cierre al tocar fuera
       ),
     );
   }
 
-  // Manejar presión larga en el mapa
+  // Agregar nuevo marcador
   void _onMapLongPress(LatLng position) async {
     final markerData = await Navigator.push(
       context,
@@ -54,7 +55,6 @@ class _MapScreenState extends State<MapScreen> {
       ),
     );
 
-    // Si se devolvieron datos del formulario, agregar el marcador
     if (markerData != null && markerData is Map<String, String>) {
       setState(() {
         _markers.add(
@@ -65,6 +65,76 @@ class _MapScreenState extends State<MapScreen> {
               title: markerData['title'],
               snippet: markerData['description'],
             ),
+            onTap:
+                () => _showMarkerOptions(position), // Mostrar opciones al tocar
+          ),
+        );
+      });
+    }
+  }
+
+  // Mostrar diálogo con opciones de edición/eliminación
+  void _showMarkerOptions(LatLng position) {
+    final marker = _markers.firstWhere((m) => m.position == position);
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(marker.infoWindow.title ?? 'Marcador'),
+            content: Text(marker.infoWindow.snippet ?? 'Sin descripción'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Cerrar diálogo
+                  _editMarker(marker); // Editar marcador
+                },
+                child: const Text('Editar'),
+              ),
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    _markers.remove(marker); // Eliminar marcador
+                  });
+                  Navigator.pop(context); // Cerrar diálogo
+                },
+                child: const Text('Eliminar'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancelar'),
+              ),
+            ],
+          ),
+    );
+  }
+
+  // Editar marcador existente
+  void _editMarker(Marker marker) async {
+    final markerData = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => MarkerFormScreen(
+              position: marker.position,
+              initialTitle: marker.infoWindow.title,
+              initialDescription: marker.infoWindow.snippet,
+            ),
+      ),
+    );
+
+    if (markerData != null && markerData is Map<String, String>) {
+      setState(() {
+        _markers.remove(marker); // Eliminar el marcador viejo
+        _markers.add(
+          Marker(
+            markerId: marker.markerId,
+            position: marker.position,
+            infoWindow: InfoWindow(
+              title: markerData['title'],
+              snippet: markerData['description'],
+            ),
+            onTap: () => _showMarkerOptions(marker.position),
           ),
         );
       });
